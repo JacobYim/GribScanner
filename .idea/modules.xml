@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GribScanner.iml" filepath="$PROJECT_DIR$/.idea/modules/GribScanner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GrabScanner.iml" filepath="$PROJECT_DIR$/.idea/modules/GrabScanner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GrabScanner.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GrabScanner.app.iml" />
     </modules>
   </component>
 </project>
