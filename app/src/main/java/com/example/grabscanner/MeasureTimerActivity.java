@@ -26,6 +26,7 @@ public class MeasureTimerActivity extends AppCompatActivity {
     private int length_of_parts = parts.length;
     private int total_trials = 10;
     private int time = 40;
+    private boolean timeout = false;
 
     //    @override
     public void onCreate(Bundle savedInstanceState){
@@ -56,6 +57,7 @@ public class MeasureTimerActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
+                timeout = true;
                 tv_time.setText("done!");
             }
         }.start();
@@ -63,20 +65,22 @@ public class MeasureTimerActivity extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent intent;
-                if (trial < total_trials) {
-                    intent = new Intent(MeasureTimerActivity.this, MeasureTimerActivity.class);
-                    intent.putExtra("index", Integer.toString(index));
-                    intent.putExtra("trial", Integer.toString(trial+1));
-                }else{
-                    if (length_of_parts < index){
-                        intent = new Intent(MeasureTimerActivity.this, PartsStartActivity.class);
-                        intent.putExtra("index", Integer.toString(index + 1));
+                if (timeout){
+                    Intent intent;
+                    if (trial < total_trials) {
+                        intent = new Intent(MeasureTimerActivity.this, MeasureTimerActivity.class);
+                        intent.putExtra("index", Integer.toString(index));
+                        intent.putExtra("trial", Integer.toString(trial+1));
                     }else{
-                        intent = new Intent(MeasureTimerActivity.this, EndActivity.class);
+                        if (length_of_parts < index){
+                            intent = new Intent(MeasureTimerActivity.this, PartsStartActivity.class);
+                            intent.putExtra("index", Integer.toString(index + 1));
+                        }else{
+                            intent = new Intent(MeasureTimerActivity.this, EndActivity.class);
+                        }
                     }
+                    startActivity(intent);
                 }
-                startActivity(intent);
             }
         });
     }
