@@ -14,7 +14,7 @@ public class PartsStartActivity extends AppCompatActivity {
     private TextView tv_part;
     private ImageView iv_scene;
 
-    private String[] parts = {"1", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3", "4-1", "4-2", "4-3"};
+    private String[] parts = {"Table", "Top-Strong", "Top-Medium", "Middle-Loose", "Middle-Strong", "Middle-Medium", "Bottom-Loose", "Bottom-Strong", "Bottom-Medium", "Top-Loose"};
     private String[] imgs  = {String.valueOf(R.drawable.table), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom)};
     private int length_of_parts = parts.length;
     //    @override
@@ -30,7 +30,7 @@ public class PartsStartActivity extends AppCompatActivity {
         String str = intent.getStringExtra("index");
         int index = Integer.parseInt(str);
 
-        tv_part.setText("Part "+parts[index]);
+        tv_part.setText(parts[index]);
         iv_scene.setImageResource(Integer.parseInt(imgs[index]));
         btn_next.setOnClickListener(new View.OnClickListener(){
             @Override

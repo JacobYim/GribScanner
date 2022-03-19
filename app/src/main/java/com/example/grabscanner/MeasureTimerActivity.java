@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -35,7 +37,7 @@ public class MeasureTimerActivity extends AppCompatActivity {
     private ImageView iv_scene;
 
     // 책상 - 탑 강 - 탑 중 - 탑 약 - 미들 강 - 미들 중 - 미들 약 - 바텀 강 - 바텀 중 - 마텀 약 - 추가실험
-    private String[] parts = {"1", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3", "4-1", "4-2", "4-3"};
+    private String[] parts = {"Table", "Top-Strong", "Top-Medium", "Middle-Loose", "Middle-Strong", "Middle-Medium", "Bottom-Loose", "Bottom-Strong", "Bottom-Medium", "Top-Loose"};
     private String[] imgs  = {String.valueOf(R.drawable.table), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom)};
     private int length_of_parts = parts.length;
     private int total_trials = 5;
@@ -69,10 +71,18 @@ public class MeasureTimerActivity extends AppCompatActivity {
         String trial_str = intent.getStringExtra("trial");
         int trial = Integer.parseInt(trial_str);
 
-        tv_part_num.setText("Part "+parts[index]);
+
+//        File appDirectory = new File( getFilesDir()+"/MyApp" );
+//      //appDirectory 폴더 없을 시 생성
+//        if ( !appDirectory.exists() ) {
+//            appDirectory.mkdirs();
+//            Log.e("INFO", "Created ... "+ appDirectory.getAbsolutePath());
+//        }
+
+        tv_part_num.setText(parts[index]);
         tv_trials.setText(trial_str+" out of "+Integer.toString(total_trials));
         iv_scene.setImageResource(Integer.parseInt(imgs[index]));
-        FileName = parts[index]+'_'+trial_str+"_"+timestamp;
+        FileName = parts[index]+'_'+trial_str+"_"+timestamp+".csv";
 
         // vibration start
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -99,17 +109,15 @@ public class MeasureTimerActivity extends AppCompatActivity {
                 tv_time.setText("done!");
                 mSensorManager.unregisterListener(mGyroLis);
                 try {
-                    FileOutputStream fos = openFileOutput(FileName,MODE_PRIVATE);
+                    FileOutputStream fos = openFileOutput(FileName,Context.MODE_APPEND);
                     fos.write(contents.getBytes(StandardCharsets.UTF_8));
                     fos.close();
-//                    FileInputStream fis = openFileInput(FileName);
-//                    DataInputStream dis = new DataInputStream(fis);
-//                    String data2 = dis.readUTF();
-//                    Log.e("LOG", data2);
-//                    dis.close();
+                    Log.i("INFO", "Saved at "+String.valueOf(getFilesDir())+FileName);
                 } catch (FileNotFoundException e) {
+                    Log.e("ERROR", "파일 Not Found");
                     e.printStackTrace();
                 } catch (IOException e) {
+                    Log.e("ERROR", "IO");
                     e.printStackTrace();
                 }
 
