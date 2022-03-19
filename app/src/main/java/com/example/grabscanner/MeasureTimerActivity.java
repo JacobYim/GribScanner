@@ -23,8 +23,8 @@ public class MeasureTimerActivity extends AppCompatActivity {
     private String[] parts = {"1", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3", "4-1", "4-2", "4-3"};
     private String[] imgs  = {String.valueOf(R.drawable.table), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom)};
     private int length_of_parts = parts.length;
-    private int total_trials = 10;
-    private int time = 40;
+    private int total_trials = 5;
+    private int time = 20;
     private boolean timeout = false;
 
     //    @override
@@ -51,14 +51,17 @@ public class MeasureTimerActivity extends AppCompatActivity {
 
         // vibration start
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate((time+1)*1000);
+//        vibrator.vibrate(4*(time+1)*1000);
 
         // gyroscope example https://mailmail.tistory.com/3
 
-        new CountDownTimer(time*1000, 1000) {
+        new CountDownTimer((time+1)*1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                tv_time.setText((int) (millisUntilFinished / 1000));
+                tv_time.setText(String.valueOf((int)(millisUntilFinished / 1000)));
+                if ((int)(millisUntilFinished / 1000)%10 == 0 && (int)(millisUntilFinished / 1000)!=0){
+                    vibrator.vibrate(1000*10);
+                }
             }
 
             public void onFinish() {
@@ -77,7 +80,7 @@ public class MeasureTimerActivity extends AppCompatActivity {
                         intent.putExtra("index", Integer.toString(index));
                         intent.putExtra("trial", Integer.toString(trial+1));
                     }else{
-                        if (length_of_parts < index){
+                        if (index+1 < length_of_parts){
                             intent = new Intent(MeasureTimerActivity.this, PartsStartActivity.class);
                             intent.putExtra("index", Integer.toString(index + 1));
                         }else{

@@ -13,9 +13,16 @@
         android:theme="@style/Theme.GrabScanner" >
         <activity
             android:name=".EndActivity"
-            android:exported="false"
-            android:label="@string/title_activity_end"
-            android:theme="@style/Theme.GrabScanner.NoActionBar" />
+            android:exported="false" />
+        <activity
+            android:name=".StartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MeasureTimerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PartsStartActivity"
+            android:exported="false" />
         <activity
             android:name=".RegisterActivity"
             android:exported="true" >

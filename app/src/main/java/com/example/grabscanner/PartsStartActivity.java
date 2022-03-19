@@ -14,8 +14,8 @@ public class PartsStartActivity extends AppCompatActivity {
     private TextView tv_part;
     private ImageView iv_scene;
 
-    private String[] parts = {"1", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3", "4-1", "4-2", "4-3", "Additional"};
-    private String[] imgs  = {String.valueOf(R.drawable.table), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom), "Additional"};
+    private String[] parts = {"1", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3", "4-1", "4-2", "4-3"};
+    private String[] imgs  = {String.valueOf(R.drawable.table), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.top), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.middle), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom), String.valueOf(R.drawable.bottom)};
     private int length_of_parts = parts.length;
     //    @override
     public void onCreate(Bundle savedInstanceState){
@@ -37,7 +37,7 @@ public class PartsStartActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(PartsStartActivity.this, MeasureTimerActivity.class);
                 intent.putExtra("index", Integer.toString(index));
-                intent.putExtra("trial", Integer.toString(0));
+                intent.putExtra("trial", Integer.toString(1));
                 startActivity(intent);
             }
         });

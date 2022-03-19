@@ -2,6 +2,7 @@ package com.example.grabscanner;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,15 +21,19 @@ public class RegisterActivity extends AppCompatActivity {
 
         edit_name = findViewById(R.id.edit_name);
         btn_next = findViewById(R.id.btn_next);
-        
+
         btn_next.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
                 str = edit_name.getText().toString();
-                Intent intent = new Intent(RegisterActivity.this, StartActivity.class);
-                intent.putExtra("name", str);
-                startActivity(intent);
+                if (str != "") {
+                    Intent intent = new Intent(RegisterActivity.this, StartActivity.class);
+                    intent.putExtra("name", str);
+                    startActivity(intent);
+                }else{
+                    edit_name.setText("please type name");
+                }
             }
         });
     }
