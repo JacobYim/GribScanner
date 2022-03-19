@@ -1,17 +1,16 @@
 package com.example.grabscanner;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.Hashtable;
-import java.util.List;
 
 public class MeasureTimerActivity extends AppCompatActivity {
     private Button btn_next;
@@ -50,7 +49,13 @@ public class MeasureTimerActivity extends AppCompatActivity {
         tv_trials.setText(trial_str+" out of "+Integer.toString(total_trials));
         iv_scene.setImageResource(Integer.parseInt(imgs[index]));
 
-        new CountDownTimer(30000, 1000) {
+        // vibration start
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate((time+1)*1000);
+
+        // gyroscope example https://mailmail.tistory.com/3
+
+        new CountDownTimer(time*1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 tv_time.setText((int) (millisUntilFinished / 1000));
