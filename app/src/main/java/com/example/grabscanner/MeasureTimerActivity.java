@@ -17,6 +17,16 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MeasureTimerActivity extends AppCompatActivity {
     private Button btn_next;
     private TextView tv_part_num;
@@ -35,6 +45,11 @@ public class MeasureTimerActivity extends AppCompatActivity {
     private SensorManager mSensorManager = null;
     private SensorEventListener mGyroLis;
     private Sensor mGgyroSensor = null;
+
+    // File
+    private String contents = "X,Y,Z,pitch,roll,yaw,dt\n";
+    private String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+    private String FileName = "";
 
     //    @override
     public void onCreate(Bundle savedInstanceState){
@@ -57,6 +72,7 @@ public class MeasureTimerActivity extends AppCompatActivity {
         tv_part_num.setText("Part "+parts[index]);
         tv_trials.setText(trial_str+" out of "+Integer.toString(total_trials));
         iv_scene.setImageResource(Integer.parseInt(imgs[index]));
+        FileName = parts[index]+'_'+trial_str+"_"+timestamp;
 
         // vibration start
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -82,6 +98,21 @@ public class MeasureTimerActivity extends AppCompatActivity {
                 timeout = true;
                 tv_time.setText("done!");
                 mSensorManager.unregisterListener(mGyroLis);
+                try {
+                    FileOutputStream fos = openFileOutput(FileName,MODE_PRIVATE);
+                    fos.write(contents.getBytes(StandardCharsets.UTF_8));
+                    fos.close();
+//                    FileInputStream fis = openFileInput(FileName);
+//                    DataInputStream dis = new DataInputStream(fis);
+//                    String data2 = dis.readUTF();
+//                    Log.e("LOG", data2);
+//                    dis.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         }.start();
 
@@ -147,13 +178,22 @@ public class MeasureTimerActivity extends AppCompatActivity {
                 roll = roll + gyroX*dt;
                 yaw = yaw + gyroZ*dt;
 
-                Log.e("LOG", "GYROSCOPE           [X]:" + String.format("%.4f", event.values[0])
-                        + "           [Y]:" + String.format("%.4f", event.values[1])
-                        + "           [Z]:" + String.format("%.4f", event.values[2])
-                        + "           [Pitch]: " + String.format("%.1f", pitch*RAD2DGR)
-                        + "           [Roll]: " + String.format("%.1f", roll*RAD2DGR)
-                        + "           [Yaw]: " + String.format("%.1f", yaw*RAD2DGR)
-                        + "           [dt]: " + String.format("%.4f", dt));
+                contents = contents + String.format("%.8f", event.values[0])
+                        + "," + String.format("%.8f", event.values[1])
+                        + "," + String.format("%.8f", event.values[2])
+                        + "," +  String.format("%.8f", pitch*RAD2DGR)
+                        + "," + String.format("%.8f", roll*RAD2DGR)
+                        + "," +  String.format("%.8f", yaw*RAD2DGR)
+                        + "," +  String.format("%.8f", dt)+"\n";
+
+
+//                Log.e("LOG", "GYROSCOPE           [X]:" + String.format("%.8f", event.values[0])
+//                        + "           [Y]:" + String.format("%.8f", event.values[1])
+//                        + "           [Z]:" + String.format("%.8f", event.values[2])
+//                        + "           [Pitch]: " + String.format("%.8f", pitch*RAD2DGR)
+//                        + "           [Roll]: " + String.format("%.8f", roll*RAD2DGR)
+//                        + "           [Yaw]: " + String.format("%.8f", yaw*RAD2DGR)
+//                        + "           [dt]: " + String.format("%.8f", dt));
 
             }
         }
