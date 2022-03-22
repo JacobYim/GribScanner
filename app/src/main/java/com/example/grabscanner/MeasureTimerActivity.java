@@ -1,30 +1,38 @@
 package com.example.grabscanner;
 
+import static android.os.Environment.getExternalStorageDirectory;
+
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Vibrator;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,6 +61,21 @@ public class MeasureTimerActivity extends AppCompatActivity {
     private String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     private String FileName = "";
 
+    private static final int CREATE_FILE = 1;
+
+    private void createFile(Uri pickerInitialUri) {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/text");
+        intent.putExtra(Intent.EXTRA_TITLE, "invoice.txt");
+
+        // Optionally, specify a URI for the directory that should be opened in
+        // the system file picker when your app creates the document.
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+        startActivityForResult(intent, CREATE_FILE);
+    }
+
     //    @override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -71,13 +94,11 @@ public class MeasureTimerActivity extends AppCompatActivity {
         String trial_str = intent.getStringExtra("trial");
         int trial = Integer.parseInt(trial_str);
 
-
-//        File appDirectory = new File( getFilesDir()+"/MyApp" );
-//      //appDirectory 폴더 없을 시 생성
-//        if ( !appDirectory.exists() ) {
-//            appDirectory.mkdirs();
-//            Log.e("INFO", "Created ... "+ appDirectory.getAbsolutePath());
-//        }
+        File appDirectory = new File( getExternalFilesDir(null)+"/data" );
+        if ( !appDirectory.exists() ) {
+            appDirectory.mkdirs();
+            Log.e("INFO", "Created ... "+ appDirectory.getAbsolutePath());
+        }
 
         tv_part_num.setText(parts[index]);
         tv_trials.setText(trial_str+" out of "+Integer.toString(total_trials));
@@ -86,10 +107,7 @@ public class MeasureTimerActivity extends AppCompatActivity {
 
         // vibration start
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-//        vibrator.vibrate(4*(time+1)*1000);
-
-        // gyroscope example https://mailmail.tistory.com/3
-
+        // gyroscope start
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         //Using the Accelometer
@@ -108,20 +126,20 @@ public class MeasureTimerActivity extends AppCompatActivity {
                 timeout = true;
                 tv_time.setText("done!");
                 mSensorManager.unregisterListener(mGyroLis);
+                File file = new File(getExternalFilesDir(null), FileName);
+                OutputStream myOutput;
                 try {
-                    FileOutputStream fos = openFileOutput(FileName,Context.MODE_APPEND);
-                    fos.write(contents.getBytes(StandardCharsets.UTF_8));
-                    fos.close();
-                    Log.i("INFO", "Saved at "+String.valueOf(getFilesDir())+FileName);
+                    myOutput = new BufferedOutputStream(new FileOutputStream(file,true));
+                    myOutput.write(contents.getBytes());
+                    myOutput.flush();
+                    myOutput.close();
                 } catch (FileNotFoundException e) {
-                    Log.e("ERROR", "파일 Not Found");
                     e.printStackTrace();
                 } catch (IOException e) {
-                    Log.e("ERROR", "IO");
                     e.printStackTrace();
                 }
-
-            }
+                    Log.i("INFO", "Saved at "+file);
+                }
         }.start();
 
         btn_next.setOnClickListener(new View.OnClickListener(){
