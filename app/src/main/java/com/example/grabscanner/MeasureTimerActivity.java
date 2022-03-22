@@ -126,7 +126,7 @@ public class MeasureTimerActivity extends AppCompatActivity {
                 timeout = true;
                 tv_time.setText("done!");
                 mSensorManager.unregisterListener(mGyroLis);
-                File file = new File(getExternalFilesDir(null), FileName);
+                File file = new File(appDirectory, FileName);
                 OutputStream myOutput;
                 try {
                     myOutput = new BufferedOutputStream(new FileOutputStream(file,true));
